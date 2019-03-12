@@ -1,6 +1,8 @@
 # App and ide  specific
-/conf/vm-settings.conf
+/conf/esxi-hosts.conf
 /logs/*
+/examples/*
+/.idea/*
 /stubs/*
 /schedules/*
 *.wpr
