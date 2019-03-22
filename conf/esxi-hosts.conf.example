@@ -1,0 +1,75 @@
+## This is an example script for the vm-host-mgr.py script
+#
+## You can specify multiple ESXi hosts, each must have its own section,
+## with the section named sequentially such as HOST1, HOST2, HOST3 ....
+#   [HOST1]
+#
+## This tells the script if actions should be performed on this host, its a boolean
+## flag, True or False (NOTE: THIS MUST BE AS SHOWN, IT IS CASE SENSITIVE)
+#   enabled=True
+#
+## The IP or FDQN to resolve the Web UI for the ESXi host, this is used for accessing the API
+#   esxi_host=192.168.11.11
+#
+## Port the ESXi WebUI is assigned to, traffic is https, and the default will be port 443
+#   esxi_webport=443
+#
+## User credentials to access the ESXi WebUI, for security its recommend you created a dedicated user
+## with permissions to suspend and power on VMs, also power off the Host
+#   esxi_username=root
+#   esxi_password=[My Password]
+#
+## This tells the script if it should use IPMI to force power the host-on, it has only been tested
+## with Dell iDRAC, but it should with  other IPMI BMC (iLO etc). This is a boolean value, must be
+## True or False
+#   ipmi_enabled=True
+#
+## The number of seconds the script will pause after issuing the IPMI POWER ON command, to give enough
+## time for the server to boot ESXi
+#   ipmi_vm_poweron_delay=330
+#
+## IP or FQDN for the IPMI remote management (iDRAC, iLO, BMC etc)
+#   ipmi_host=192.168.11.221
+#
+## User credentials for accessing the IMPI remote management (for example, iDRAC default is root/calvin)
+#   ipmi_username=root
+#   ipmi_password=[My Password]
+
+
+
+[HOST1]
+enabled=True
+esxi_host=192.168.11.11
+esxi_webport=443
+esxi_username=root
+esxi_password=[My Password]
+ipmi_enabled=True
+ipmi_vm_poweron_delay=330
+ipmi_host=192.168.11.221
+ipmi_username=root
+ipmi_password=[My Password]
+
+[HOST2]
+enabled=True
+esxi_host=192.168.11.12
+esxi_webport=443
+esxi_username=root
+esxi_password=h0m3duck@+
+ipmi_enabled=True
+ipmi_vm_poweron_delay=330
+ipmi_host=192.168.11.222
+ipmi_username=root
+ipmi_password=[My Password]
+
+
+[HOST3]
+enabled=False
+esxi_host=192.168.11.11
+esxi_webport=443
+esxi_username=123
+esxi_password=1234
+ipmi_enabled=False
+ipmi_host=
+ipmi_username=
+ipmi_password=
+ipmi_vm_poweron_delay=300

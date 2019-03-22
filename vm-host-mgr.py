@@ -1,18 +1,62 @@
+#! /usr/bin/env python
+
+
 from pyvim import connect, task
 from pyVmomi import vim
 from tools import cli
 from tools import tasks
 from pprint import pprint
-from numbers import Number
+
 
 import atexit
 import time
 import requests
+import urllib3
 import ssl
 import configparser
 import os
 import subprocess
 import argparse
+import sys
+import re
+import logging
+import traceback
+
+
+class logger:
+    loggingEnabled = False
+    initialised = False
+    logger = None
+
+    def __init__(self):
+        if Logger.initialised == False:
+            logger.setup()
+
+    @staticmethod
+    def setup():
+        logger.initialised = True
+        logger.logger = logging.getLogger()
+        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+
+        logger.logger.addHandler(console_handler)
+
+        logger.logger.setLevel(logging.INFO)
+
+    @staticmethod
+    def set_enabled(status):
+        logger.loggingEnabled = status
+
+    @staticmethod
+    def debug(str):
+        if logger.loggingEnabled:
+            logger.logger.debug(str)
+
+    @staticmethod
+    def info(str):
+        if logger.loggingEnabled:
+            logger.logger.info(str)
 
 """
 Consolidates "tasks" returned by calls to pymomi, then allows wait() for the tasks to be completed...
@@ -30,9 +74,9 @@ class ESXiTaskManager:
     def check(self):
         if len(self.tasks):
             for task in self.tasks:
-                pprint(task.info)
+                logger.info(task.info)
         else:
-            print("No tasks..")
+            logger.info("No tasks..")
 
     def _progress_output(self, task, progress):
         if progress is None:
@@ -46,7 +90,7 @@ class ESXiTaskManager:
             if progress.isdigit():
                 progress = progress + "%"
 
-            print("{} on {}, progress is {}".format(task.info.descriptionId, task.info.entityName, progress))
+            logger.info("{} on {}, progress is {}".format(task.info.descriptionId, task.info.entityName, progress))
         except (TypeError) as e:
             pass
 
@@ -63,35 +107,23 @@ class ESXiTaskManager:
 
                 task.WaitForTasks(tasks=self.tasks, onProgressUpdate=progress_call)
             except (Exception) as e:
-                print("Houston, we have a problem: " + e.msg)
+                logger.info("Houston, we have a problem: " + e.msg)
+
 
 """
 Manages the connection to ESXi/vCenter hosts, including the accessing the server-instance and data contents
 """
 class ESXiConnectionManager:
-    def __init__(self, svr, usr, pss, prt, ssl_verify=False):
+    def __init__(self, svr, usr, pss, prt):
         self.server_instance = None
 
-        ## pyvMomi library expects a trusted cert from the ESXi/vCenter server.. need to allow self-generated certs
-        if ssl_verify == False:
-            self._disable_ssl_verify()
-
         try:
-            self.server_instance = connect.SmartConnect(host=svr, user=usr, pwd=pss, port=prt)
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            self.server_instance = connect.SmartConnectNoSSL(host=svr, user=usr, pwd=pss, port=prt)
             atexit.register(connect.Disconnect, self.server_instance)
 
         except IOError as ex:
             raise SystemExit("unable to connect to vCenter / ESXi host..")
-
-    def _disable_ssl_verify(self):
-        requests.packages.urllib3.disable_warnings()
-        try:
-            _create_unverified_https_context = ssl._create_unverified_context
-        except AttributeError:
-            print("Error disabling SSL Verification")
-            pass
-        else:
-            ssl._create_default_https_context = _create_unverified_https_context
 
     def get_server_instance(self):
         return self.server_instance
@@ -111,7 +143,7 @@ class ESXiHostManager:
         self.hosts = dict()
         host_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
 
-        ## Here we keep a class-local reference to the hosts, filtering for specific hosts if defined
+        ## Here we keep a class-local reference to the hosts, filtering for specific hosts if defined in "hostnames"
         for host in host_view.view:
             if len(hostnames) == 0:
                 self.hosts[host.name] = host
@@ -125,7 +157,7 @@ class ESXiHostManager:
     def shutdown_hosts(self, forced_shutdown=False):
         tasks = list()
         for key, host in self.hosts.items():
-            print(key)
+            logger.info("Host {} is now being shutdown".format(key))
             task = host.ShutdownHost_Task(forced_shutdown)
             tasks.append(task)
 
@@ -143,7 +175,6 @@ class ESXiVMManager:
         self.vms = dict()
         for key, host in hosts.items():
             for vm in host.vm:
-                print(vm.name)
                 self.vms[vm.name] = vm
 
         return self.vms
@@ -157,20 +188,22 @@ class ESXiVMManager:
     def suspend_vms(self):
         task_list = list()
         for key, vm in self.vms.items():
+            logger.info("VM {} is currently {}".format(key, vm.runtime.powerState))
             if vm.runtime.powerState == vim.VirtualMachinePowerState.poweredOn:
+                logger.info("VM {} is being suspended".format(key))
                 note_task = self.set_note(vm, "SCHEDULED_SUSPEND")
                 task.WaitForTask(note_task)
                 vm_task = vm.SuspendVM_Task()
                 task_list.append(vm_task)
-                # tasks.append(note_task)
 
         return task_list
 
     def unsuspend_vms(self):
         task_list = list()
         for key, vm in self.vms.items():
-            print(key + " is " + vm.runtime.powerState)
+            logger.info("VM {} is currently {}".format(key, vm.runtime.powerState))
             if vm.runtime.powerState == vim.VirtualMachinePowerState.suspended:
+                logger.info("VM {} is being unsuspended".format(key))
                 note_task = self.set_note(vm, "SCHEDULED_UNSUSPEND")
                 task.WaitForTask(note_task)
                 vm_task = vm.PowerOnVM_Task()
@@ -182,23 +215,71 @@ class ESXiVMManager:
 IPMI access by making subsystem calls the ipmitools executable 
 """
 class IPMIManager:
+    POWER_OFF = "Off"
+    POWER_ON = "On"
+    POWER_UP = "Up/On"
+
     def __init__(self, host, username, password):
         self.host = host
         self.username = username
         self.password = password
 
-    def power_on(self):
+    def check_powered_on_result(self, result):
+        result = str(result)
+        if result == self.POWER_ON.lower():
+            return True
+        elif result == self.POWER_UP.lower():
+            return True
+        else:
+            return False
+
+    def is_powered_on(self):
+        result = self.get_power_status()
+        return self.check_powered_on_result(result)
+
+    def power_response_to_str(self, result):
+        result = str(result)
+
+        if result.lower() == self.POWER_UP.lower():
+            return "Powering UP"
+        elif result.lower() == self.POWER_ON.lower():
+            return "Power is ON"
+        elif result.lower() == self.POWER_OFF.lower():
+            return "Power is OFF"
+        else:
+            return "Power is UNKNOWN"
+
+    def get_power_status(self):
         try:
-            cmd = "ipmitool -I lanplus -H {} -U {} -P {} chassis power on".format(self.host, self.username,
-                                                                                  self.password)
+            cmd = "ipmitool -I lanplus -H {} -U {} -P {} chassis power status".format(self.host, self.username, self.password)
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
-            print(result.stdout)
+
+            pattern = "Chassis Power is (?P<status>.*)\\\\n'"
+            result = re.search(pattern, str(result.stdout))
+
+            return result.group("status")
         except subprocess.CalledProcessError as e:
             raise Exception("Unable to cleanup old audit logs, the following error occured: " + e.output)
 
+    def power_on(self):
+        try:
+            cmd = "ipmitool -I lanplus -H {} -U {} -P {} chassis power on".format(self.host, self.username, self.password)
+            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+
+            pattern = ": (?P<status>.*)\\\\n'"
+            result = re.search(pattern, str(result.stdout))
+            status = result.group("status")
+
+            return self.check_powered_on_result(status)
+        except subprocess.CalledProcessError as e:
+            raise Exception("Error unable to power on, the following error occured: " + e.output)
+
+
+
+
+
 """
 A utility for loading the config file, extracting the user-defined settings, and ensuring that mandatory values are present
-
 """
 class ConfigManager:
     def __init__(self, path):
@@ -206,10 +287,10 @@ class ConfigManager:
         Initiate the class, reset all values to default..
         """
         self.config_path = path
-        self.hosts = []
+        self.hosts = dict()
 
     def read(self):
-        mandatory_fields = ["enabled", "esxi_host", "esxi_username", "esxi_password", "ipmi_enabled"]
+        mandatory_fields = ["enabled", "esxi_host", "esxi_username", "esxi_password", "esxi_webport", "ipmi_enabled"]
 
         if os.path.exists(self.config_path):
             config_parser = configparser.ConfigParser()
@@ -229,106 +310,180 @@ class ConfigManager:
                 elif host["enabled"] == "False":
                     host["enabled"] = False
                 else:
-                    raise Exception(
-                        "[HOST%s] setting 'enabled' is invalid, must be True or False (case sensitive)" % (host_no))
+                    raise Exception("[HOST%s] setting 'enabled' is invalid, must be True or False (case sensitive)" % (host_no))
 
                 if host["ipmi_enabled"] == "True":
                     host["ipmi_enabled"] = True
                 elif host["ipmi_enabled"] == "False":
                     host["ipmi_enabled"] = False
                 else:
-                    raise Exception(
-                        "[HOST%s] setting 'ipmi_enabled' is invalid, must be True or False (case sensitive)" % (
-                            host_no))
-
-                self.hosts.append(host)
+                    raise Exception("[HOST%s] setting 'ipmi_enabled' is invalid, must be True or False (case sensitive)" % (host_no))
+                esxi_host = host["esxi_host"]
+                self.hosts[esxi_host] = host
                 host_no += 1
 
         else:
             raise Exception("Config file does not exist, cannot find " + self.config_path)
 
 
-def get_config_for_hosts():
+
+class WebManager:
+    def __init__(self, fqdn):
+        self.fqdn = fqdn
+
+    def test_web_server(self, delay, attempts):
+        url = "https://{}/ui/#/login".format(self.fqdn)
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        result = None
+        for count in range(attempts):
+            try:
+                result = requests.head(url, verify=False, timeout=5)
+
+                ## If we get a valid response... great
+                if result.status_code == 200:
+                    logger.info("{} is NOW accessible, on attempt {}, total delay was {} seconds".format(url, count+1, count*delay))
+                    logger.info("Allowing WebUI time to complete initialisation, delaying {} more seconds".format(delay))
+                    time.sleep(delay)
+                    return True
+
+            ## An exception is going to happen everytime a request fails, such as timeout or rejected connection
+            except requests.ConnectionError as e:
+                logger.info("{} is not responding, please wait - attempt {} of {}, delaying {} seconds".format(url, count + 1, attempts, delay))
+            finally:
+                time.sleep(delay)
+
+                ## If we're post exception, there will be no response, so nothing to do... else only log message if
+                ## we didn't see a 200... this stop the message showing on function exit
+                if result is not None:
+                    if result.status_code != 200:
+                        logger.info("{} is responding with HTTP {} - attempt {} of {}, delaying {} seconds".format(url, result.status_code, count + 1, attempts, delay))
+
+                        result.close()
+
+        return False
+
+
+
+
+def do_power_on_vms(host_config):
+    connection_mgr = ESXiConnectionManager(host_config["esxi_host"], host_config["esxi_username"],
+                                           host_config["esxi_password"], host_config["esxi_webport"])
+    host_mgr = ESXiHostManager()
+    vm_mgr = ESXiVMManager()
+    task_mgr = ESXiTaskManager()
+
+    hosts = host_mgr.get_hosts(connection_mgr.get_content())
+
+    ## Process and pause VMs
+    vms = vm_mgr.get_vms(hosts)
+    task_list = vm_mgr.unsuspend_vms()
+    task_mgr.add_task_list(task_list)
+    task_mgr.wait(True)
+    task_mgr.clear()
+
+
+def get_config_for_host(esxi_host):
     config = ConfigManager("conf/esxi-hosts.conf")
     config.read()
-    return config.hosts
+
+    if esxi_host not in config.hosts:
+        raise Exception("Host '{}' not found in the esxi-hosts.conf".format(host))
+
+    host_config = config.hosts[esxi_host]
+    if host_config["enabled"] == False:
+        raise Exception("Unable to perform action, host '{}' is DISABLED in the esxi-hosts.conf".format(esxi_host))
+
+    return host_config
+
+def get_power_status(esxi_host):
+    logger.info("Loading config")
+    host_config = get_config_for_host(esxi_host)
+
+    if host_config["ipmi_enabled"] == True:
+        ipmi = IPMIManager(host_config["ipmi_host"], host_config["ipmi_username"], host_config["ipmi_password"])
+        result = ipmi.get_power_status()
+        logger.info("Current power status is: " + ipmi.power_response_to_str(result))
+        return ipmi.check_powered_on_result(result)
 
 
-def do_shutdown(hosts):
-    ## Setup connection and get our content provider...
-    for host in hosts:
-        if host["enabled"] == True:
-            connection_mgr = ESXiConnectionManager(host["esxi_host"], host["esxi_username"], host["esxi_password"], 443)
-            host_mgr = ESXiHostManager()
-            vm_mgr = ESXiVMManager()
-            task_mgr = ESXiTaskManager()
+def do_shutdown(esxi_host):
+    logger.info("Loading config")
+    host_config = get_config_for_host(esxi_host)
 
-            hosts = host_mgr.get_hosts(connection_mgr.get_content())
+    connection_mgr = ESXiConnectionManager(host_config["esxi_host"], host_config["esxi_username"], host_config["esxi_password"], host_config["esxi_webport"])
+    host_mgr = ESXiHostManager()
+    vm_mgr = ESXiVMManager()
+    task_mgr = ESXiTaskManager()
 
-            ## Process and pause VMs
-            vms = vm_mgr.get_vms(hosts)
-            task_list = vm_mgr.suspend_vms()
-            task_mgr.add_task_list(task_list)
-            task_mgr.wait(True)
-            task_mgr.clear()
+    hosts = host_mgr.get_hosts(connection_mgr.get_content())
+    vms = vm_mgr.get_vms(hosts)
+    task_list = vm_mgr.suspend_vms()
+    task_mgr.add_task_list(task_list)
+    task_mgr.wait(True)
+    task_mgr.clear()
 
-            ## Process Host...
-            task_list = host_mgr.shutdown_hosts(True)
-            task_mgr.add_task_list(task_list)
-            task_mgr.wait(True)
+    ## Process Host...
+    task_list = host_mgr.shutdown_hosts(True)
+    task_mgr.add_task_list(task_list)
+    task_mgr.wait(True)
 
-def do_poweron(hosts):
 
-    boot_delay = 0
+def do_poweron(esxi_host):
+    logger.info("Loading config")
+    host_config = get_config_for_host(esxi_host)
 
-    ## Boot hosts via IPMI
-    for host in hosts:
-        if host["enabled"] == True:
-            if host["ipmi_enabled"] == True:
-                print("powering on " + host["esxi_host"])
-                ipmi = IPMIManager(host["ipmi_host"], host["ipmi_username"], host["ipmi_password"])
-                ipmi.power_on()
+    ## IPMI Power On Blick
+    if host_config["ipmi_enabled"] == True:
+        logger.info("Sending IPMI power on to " + host_config["esxi_host"])
+        ipmi = IPMIManager(host_config["ipmi_host"], host_config["ipmi_username"], host_config["ipmi_password"])
+        result = ipmi.power_on()
+        logger.info("IPMI result was " + ipmi.power_response_to_str(result))
 
-                ## Figure which host had the biggest boot delay.. then clone it
-                if int(host["ipmi_vm_poweron_delay"]) > boot_delay:
-                    boot_delay = int(host["ipmi_vm_poweron_delay"])
+        logger.info("Beginning checks for WebUI on " + host_config["esxi_host"])
+        web_check = WebManager(host_config["esxi_host"])
+        result = web_check.test_web_server(5, 100)
 
-    ## if IPMI was used, then we use the boot delay...
-    # @todo: replace this with a check for HTTPS connection..
-    print("Allowing {} seconds to boot hosts, before starting VMs".format(boot_delay))
-    time.sleep(boot_delay)
+        if result == False:
+            raise Exception("Unable to boot VMs, the WebUI on host '{}' did not respond in time!".format(esxi_host))
+    ## End IPMI
 
-    ## Boot VMs
-    for host in hosts:
-        if host["enabled"] == True:
+    ## VM Power On Block
+    do_power_on_vms(host_config)
+    ## End VM
 
-            connection_mgr = ESXiConnectionManager(host["esxi_host"], host["esxi_username"], host["esxi_password"], 443)
-            host_mgr = ESXiHostManager()
-            vm_mgr = ESXiVMManager()
-            task_mgr = ESXiTaskManager()
 
-            hosts = host_mgr.get_hosts(connection_mgr.get_content())
-
-            ## Process and pause VMs
-            vms = vm_mgr.get_vms(hosts)
-            task_list = vm_mgr.unsuspend_vms()
-            task_mgr.add_task_list(task_list)
-            task_mgr.wait(True)
-            task_mgr.clear()
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--up", help="Power up the ESXi Hosts and their VMs", action="store_true")
-    parser.add_argument("-d", "--down", help="Suspend VMs and power down the Hosts", action="store_true")
+    parser = argparse.ArgumentParser("ESXi/BMC Power Manager")
+    parser.add_argument("host", help="Name of the ESXi to perform operation on (must match esxi_host in the esxi-host.conf)", action="store")
+    parser.add_argument("operation", choices=["up", "down", "status"], help="type of power operation to perform")
+    parser.add_argument("-verbose", "--verbose", help="Output info and debug information, very useful for finding config problems", action='store_true')
+
     args = parser.parse_args()
-    if args.up:
-        hosts = get_config_for_hosts()
-        do_poweron(hosts)
-    elif args.down:
-        hosts = get_config_for_hosts()
-        do_shutdown(hosts)
-    else:
-        print("No valid arguments, use -h for help!")
+
+    if args.verbose == True:
+        logger.set_enabled(True)
+
+    host = args.host
+    operation = args.operation
+
+    try:
+        if operation == "up":
+            logger.info("Received POWER UP for {}".format(host))
+            do_poweron(host)
+        elif operation == "down":
+            logger.info("Received POWER DOWN for {}".format(host))
+            do_shutdown(host)
+        elif operation == "status":
+            logger.info("Received POWER STATUS for {}".format(host))
+            result = get_power_status(host)
+            print(result)
+    except Exception as e:
+         logger.info("Exception: " + str(e))
+         logger.info("Exception Trace: " + traceback.format_exc())
+         print("Error: " + str(e))
+
 
 if __name__ == "__main__":
+    logger.setup()
     main()
