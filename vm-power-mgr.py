@@ -276,8 +276,6 @@ class IPMIManager:
 
 
 
-
-
 """
 A utility for loading the config file, extracting the user-defined settings, and ensuring that mandatory values are present
 """

@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38759d53-8758-4f9b-aed8-8db9e2f63e13" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/conf/esxi-hosts.conf.example" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/stubs/pyvmomi/stub1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stubs/pyvmomi/samples/reboot_vm.py" beforeDir="false" afterPath="$PROJECT_DIR$/stubs/pyvmomi/samples/reboot_vm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vm-host-mgr.py" beforeDir="false" afterPath="$PROJECT_DIR$/vm-host-mgr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-power-mgr.py" beforeDir="false" afterPath="$PROJECT_DIR$/vm-power-mgr.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,7 +20,7 @@
     <SUITE FILE_PATH="coverage/vm_scripts$wol.coverage" NAME="wol Coverage Results" MODIFIED="1552331979365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/vm_scripts$get_vms.coverage" NAME="get_vms Coverage Results" MODIFIED="1552424918464" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stubs" />
     <SUITE FILE_PATH="coverage/vm_scripts$test_http.coverage" NAME="test_http Coverage Results" MODIFIED="1552744873685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stubs" />
-    <SUITE FILE_PATH="coverage/vm_scripts$vm_host_mgr.coverage" NAME="vm-host-mgr Coverage Results" MODIFIED="1552510896402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/vm_scripts$vm_host_mgr.coverage" NAME="vm-host-mgr Coverage Results" MODIFIED="1553378897754" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -44,26 +43,32 @@
     <splitter split-orientation="horizontal" split-proportion="0.7445347">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/vm-host-mgr.py">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/stubs/regex.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="456">
-                  <caret line="230" column="44" selection-start-line="230" selection-start-column="44" selection-end-line="230" selection-end-column="44" />
+                <state relative-caret-position="204">
+                  <caret line="12" column="44" lean-forward="true" selection-start-line="12" selection-start-column="44" selection-end-line="12" selection-end-column="44" />
                   <folding>
-                    <element signature="e#25#56#0" expanded="true" />
+                    <element signature="e#2#11#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$USER_HOME$/Downloads/chrome-remote-desktop-v2">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="445">
+                  <caret line="638" column="9" lean-forward="true" selection-end-line="1776" />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/stubs/regex.py">
+            <entry file="file://$PROJECT_DIR$/vm-power-mgr.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="204">
-                  <caret line="12" column="38" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="38" />
-                  <folding>
-                    <element signature="e#2#11#0" expanded="true" />
-                  </folding>
+                  <caret line="12" column="15" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
                 </state>
               </provider>
             </entry>
@@ -108,7 +113,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/stubs/reboot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="952">
+                <state relative-caret-position="1105">
                   <caret line="65" column="16" selection-start-line="65" selection-start-column="16" selection-end-line="66" selection-end-column="73" />
                   <folding>
                     <element signature="e#0#13#0" expanded="true" />
@@ -120,7 +125,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/set_note.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="952">
+                <state relative-caret-position="1037">
                   <caret line="61" column="20" selection-start-line="61" selection-start-column="6" selection-end-line="61" selection-end-column="20" />
                   <folding>
                     <element signature="e#595#608#0" expanded="true" />
@@ -150,7 +155,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/getallvms.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1343">
+                <state relative-caret-position="1445">
                   <caret line="85" column="22" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
                   <folding>
                     <element signature="e#726#739#0" expanded="true" />
@@ -162,7 +167,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$USER_HOME$/Downloads/incapsula_audit.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1715">
+                <state relative-caret-position="6698">
                   <caret line="394" column="31" selection-start-line="394" selection-start-column="31" selection-end-line="394" selection-end-column="31" />
                   <folding>
                     <element signature="e#155#170#0" expanded="true" />
@@ -221,12 +226,13 @@
         <option value="$USER_HOME$/Downloads/incapsula_audit.py" />
         <option value="$PROJECT_DIR$/conf/esxi-hosts.conf" />
         <option value="$PROJECT_DIR$/vm-host-mgr.py" />
+        <option value="$PROJECT_DIR$/vm-power-mgr.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="105" />
-    <option name="y" value="171" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="214" />
+    <option name="y" value="151" />
     <option name="width" value="1909" />
     <option name="height" value="1840" />
   </component>
@@ -236,6 +242,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -257,7 +264,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -287,7 +293,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.ipmi_test">
+  <component name="RunManager" selected="Python.vm-host-mgr">
     <configuration name="get_vms" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="vm-scripts" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -400,10 +406,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.vm-host-mgr" />
         <item itemvalue="Python.ipmi_test" />
         <item itemvalue="Python.regex" />
         <item itemvalue="Python.test_http" />
-        <item itemvalue="Python.vm-host-mgr" />
         <item itemvalue="Python.get_vms" />
       </list>
     </recent_temporary>
@@ -421,12 +427,13 @@
       <workItem from="1551734885308" duration="31721000" />
       <workItem from="1552339662026" duration="18762000" />
       <workItem from="1552519858209" duration="2373000" />
-      <workItem from="1552743997922" duration="36080000" />
+      <workItem from="1552743997922" duration="37958000" />
+      <workItem from="1553379350360" duration="660000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98402000" />
+    <option name="totallyTimeSpent" value="100940000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -438,16 +445,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="105" y="171" width="1909" height="1840" extended-state="0" />
+    <frame x="214" y="151" width="1909" height="1840" extended-state="1" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49928057" visible="true" weight="0.13015532" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49928057" visible="true" weight="0.13122657" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.5007194" side_tool="true" weight="0.14593698" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.15474452" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.15617849" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.15446225" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.15617849" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32919708" />
@@ -531,50 +538,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/stubs/reboot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="65" column="16" selection-start-line="65" selection-start-column="16" selection-end-line="66" selection-end-column="73" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/set_note.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="61" column="20" selection-start-line="61" selection-start-column="6" selection-end-line="61" selection-end-column="20" />
-          <folding>
-            <element signature="e#595#608#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/conf/esxi-hosts.conf.example">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="35" column="14" selection-start-line="35" selection-start-column="14" selection-end-line="35" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/getallvms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1343">
-          <caret line="85" column="22" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
-          <folding>
-            <element signature="e#726#739#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../virtualenvs/vm-scripts/lib/python3.7/site-packages/pyvim/connect.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="14365">
@@ -582,27 +545,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/stubs/args.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="714">
-          <caret line="42" column="31" selection-start-line="42" selection-start-column="31" selection-end-line="42" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/stubs/get_vms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stubs/regex.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="38" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="38" />
-          <folding>
-            <element signature="e#2#11#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -626,13 +572,71 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/stubs/args.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="42" column="31" selection-start-line="42" selection-start-column="31" selection-end-line="42" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vm-power-mgr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="15" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stubs/reboot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="65" column="16" selection-start-line="65" selection-start-column="16" selection-end-line="66" selection-end-column="73" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/set_note.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1037">
+          <caret line="61" column="20" selection-start-line="61" selection-start-column="6" selection-end-line="61" selection-end-column="20" />
+          <folding>
+            <element signature="e#595#608#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/esxi-hosts.conf.example">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="35" column="14" selection-start-line="35" selection-start-column="14" selection-end-line="35" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stubs/pyvmomi/samples/getallvms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1445">
+          <caret line="85" column="22" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
+          <folding>
+            <element signature="e#726#739#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/Downloads/incapsula_audit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1715">
+        <state relative-caret-position="6698">
           <caret line="394" column="31" selection-start-line="394" selection-start-column="31" selection-end-line="394" selection-end-column="31" />
           <folding>
             <element signature="e#155#170#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
         </state>
       </provider>
     </entry>
@@ -643,13 +647,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vm-host-mgr.py">
+    <entry file="file://$PROJECT_DIR$/stubs/regex.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="230" column="44" selection-start-line="230" selection-start-column="44" selection-end-line="230" selection-end-column="44" />
+        <state relative-caret-position="204">
+          <caret line="12" column="44" lean-forward="true" selection-start-line="12" selection-start-column="44" selection-end-line="12" selection-end-column="44" />
           <folding>
-            <element signature="e#25#56#0" expanded="true" />
+            <element signature="e#2#11#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/chrome-remote-desktop-v2">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="638" column="9" lean-forward="true" selection-end-line="1776" />
         </state>
       </provider>
     </entry>
