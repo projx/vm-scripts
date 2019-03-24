@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38759d53-8758-4f9b-aed8-8db9e2f63e13" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/stubs/pyvmomi/stub1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stubs/pyvmomi/samples/reboot_vm.py" beforeDir="false" afterPath="$PROJECT_DIR$/stubs/pyvmomi/samples/reboot_vm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vm-power-mgr.py" beforeDir="false" afterPath="$PROJECT_DIR$/vm-power-mgr.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,11 +55,23 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$USER_HOME$/Downloads/chrome-remote-desktop-v2">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="445">
                   <caret line="638" column="9" lean-forward="true" selection-end-line="1776" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/readme.md">
+              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+                <state split_layout="SPLIT">
+                  <first_editor relative-caret-position="85">
+                    <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+                  </first_editor>
+                  <second_editor />
                 </state>
               </provider>
             </entry>
@@ -180,7 +192,7 @@
             <entry file="file://$PROJECT_DIR$/.gitignore">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="187">
-                  <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
+                  <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
                 </state>
               </provider>
             </entry>
@@ -227,10 +239,11 @@
         <option value="$PROJECT_DIR$/conf/esxi-hosts.conf" />
         <option value="$PROJECT_DIR$/vm-host-mgr.py" />
         <option value="$PROJECT_DIR$/vm-power-mgr.py" />
+        <option value="$PROJECT_DIR$/readme.md" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="214" />
     <option name="y" value="151" />
     <option name="width" value="1909" />
@@ -428,12 +441,12 @@
       <workItem from="1552339662026" duration="18762000" />
       <workItem from="1552519858209" duration="2373000" />
       <workItem from="1552743997922" duration="37958000" />
-      <workItem from="1553379350360" duration="660000" />
+      <workItem from="1553379350360" duration="1090000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="100940000" />
+    <option name="totallyTimeSpent" value="101370000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -445,10 +458,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="214" y="151" width="1909" height="1840" extended-state="1" />
+    <frame x="214" y="151" width="1909" height="1840" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49928057" visible="true" weight="0.13122657" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49928057" visible="true" weight="0.13122657" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.5007194" side_tool="true" weight="0.14593698" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -636,7 +649,7 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
+          <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
         </state>
       </provider>
     </entry>
@@ -661,6 +674,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="445">
           <caret line="638" column="9" lean-forward="true" selection-end-line="1776" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="85">
+            <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

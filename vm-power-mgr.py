@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 
-from pyvim import connect, task
+from pyVim import connect, task
 from pyVmomi import vim
 from tools import cli
 from tools import tasks
