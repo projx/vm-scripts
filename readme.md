@@ -4,15 +4,17 @@ This repository contain the python script(s) I use for managing my homelab and I
 
 The main focus I have is power saving, whilst I love gadgets, I hate huge electric bills. 
 
-##Scripts
-###vm-power-mgr.py
+## Scripts
+
+
+### vm-power-mgr.py
 
 Is a shell script for powering up and down Dell PowerEdge servers running ESXi (must have a iDRAC Enterprise), it 
 uses the VMWare vSphere API to pause VMs and shutdown the host, it can power the server on using IPMI to connect to the 
 host iDRAC (this should also with iLO and other BMC's)
 
 
-####Usage:
+#### Usage:
 
 vm-power-mgr.py \<HOST\> \<UP/DOWN/STATUS> \<optional flags\>
 
@@ -27,14 +29,14 @@ Optional Flags:
 * Get current status - `vm-power-mgr.py 192.168.11.21 status`
 * For detailed output use -v - `vm-power-mgr.py 192.168.11.21 up -v` 
 
-#####Requirements:
+##### Requirements:
 
 * Python 3.x (I developed this using 3.7, it should with with 3.5, 3.6 etc but its not tested)
 * ipmitools (Usually available as with standard distro installer, i.e. apt install ipmitool)
 
 Though not essential, I recommend you install this in a python virtualenv for testing.
 
-#####Installation:
+##### Installation:
 This script uses the ipmitools to connect to the hosts iDRAC/iLO/BMC to control power, 
 and the python pyVMomi library for connecting
 * `apt install ipmitool`
