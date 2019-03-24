@@ -1,4 +1,10 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Author:       Kelvin W
+# Date:         2019
+# Description:  A power saving script for my or your Dell PowerEdge ESXi homelab.
+#               It can be used to power down, i.e. suspending VMs and shutting down
+#               the host, then powering it back up via IPMI and resuming the VMs.
 
 
 from pyVim import connect, task
@@ -225,7 +231,7 @@ class IPMIManager:
         self.password = password
 
     def check_powered_on_result(self, result):
-        result = str(result)
+        result = str(result).lower()
         if result == self.POWER_ON.lower():
             return True
         elif result == self.POWER_UP.lower():
@@ -252,25 +258,39 @@ class IPMIManager:
     def get_power_status(self):
         try:
             cmd = "ipmitool -I lanplus -H {} -U {} -P {} chassis power status".format(self.host, self.username, self.password)
-            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            pattern = "Chassis Power is (?P<status>.*)\\\\n'"
-            result = re.search(pattern, str(result.stdout))
+            stderr = result.stderr.decode('UTF-8')
+            stdout = result.stdout.decode('UTF-8')
+
+            if stderr != "":
+                raise Exception("Call to IPMI failed (check credentials?),  " + stderr)
+
+            pattern = "Chassis Power is (?P<status>.*)"
+            result = re.search(pattern, stdout)
 
             return result.group("status")
         except subprocess.CalledProcessError as e:
-            raise Exception("Unable to cleanup old audit logs, the following error occured: " + e.output)
+            raise Exception("Unable to get power status, error was returned: " + e.output)
 
     def power_on(self):
         try:
             cmd = "ipmitool -I lanplus -H {} -U {} -P {} chassis power on".format(self.host, self.username, self.password)
-            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            pattern = ": (?P<status>.*)\\\\n'"
-            result = re.search(pattern, str(result.stdout))
-            status = result.group("status")
+            stderr = result.stderr.decode('UTF-8')
+            stdout = result.stdout.decode('UTF-8')
 
-            return self.check_powered_on_result(status)
+            if stderr != "":
+                raise Exception("Call to IPMI failed (check credentials?),  " + stderr)
+
+            logger.info("IPMI power ON operation, responded with " + stdout)
+
+            pattern = ": (?P<status>.*)"
+            result = re.search(pattern, stdout)
+            status = self.check_powered_on_result(result.group("status"))
+
+            return status
         except subprocess.CalledProcessError as e:
             raise Exception("Error unable to power on, the following error occured: " + e.output)
 
@@ -425,25 +445,32 @@ def do_shutdown(esxi_host):
     task_mgr.add_task_list(task_list)
     task_mgr.wait(True)
 
-
-def do_poweron(esxi_host):
-    logger.info("Loading config")
-    host_config = get_config_for_host(esxi_host)
-
+def do_power_on_host(host_config):
     ## IPMI Power On Blick
+    logger.info("Begin IPMI processing")
     if host_config["ipmi_enabled"] == True:
         logger.info("Sending IPMI power on to " + host_config["esxi_host"])
         ipmi = IPMIManager(host_config["ipmi_host"], host_config["ipmi_username"], host_config["ipmi_password"])
         result = ipmi.power_on()
-        logger.info("IPMI result was " + ipmi.power_response_to_str(result))
 
-        logger.info("Beginning checks for WebUI on " + host_config["esxi_host"])
-        web_check = WebManager(host_config["esxi_host"])
-        result = web_check.test_web_server(5, 100)
+        return result
+    else:
+        logger.info("IPMI is not enabled for {}".format(host_config["esxi_host"]))
 
-        if result == False:
-            raise Exception("Unable to boot VMs, the WebUI on host '{}' did not respond in time!".format(esxi_host))
-    ## End IPMI
+    return False
+
+
+def do_poweron(esxi_host):
+    logger.info("Loading config")
+    host_config = get_config_for_host(esxi_host)
+    do_power_on_host(host_config)
+
+    logger.info("Beginning checks for WebUI on " + host_config["esxi_host"])
+    web_check = WebManager(host_config["esxi_host"])
+    result = web_check.test_web_server(5, 100)
+
+    if result == False:
+        raise Exception("Unable to boot VMs, the WebUI on host '{}' did not respond in time!".format(esxi_host))
 
     ## VM Power On Block
     do_power_on_vms(host_config)
