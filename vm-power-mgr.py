@@ -401,7 +401,8 @@ def do_power_on_vms(host_config):
 
 
 def get_config_for_host(esxi_host):
-    config = ConfigManager("conf/esxi-hosts.conf")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    config = ConfigManager(dir_path +"/conf/esxi-hosts.conf")
     config.read()
 
     if esxi_host not in config.hosts:

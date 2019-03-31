@@ -54,7 +54,7 @@ enabled=True
 esxi_host=192.168.11.12
 esxi_webport=443
 esxi_username=root
-esxi_password=h0m3duck@+
+esxi_password=[My Password]
 ipmi_enabled=True
 ipmi_vm_poweron_delay=330
 ipmi_host=192.168.11.222
@@ -62,14 +62,14 @@ ipmi_username=root
 ipmi_password=[My Password]
 
 
-[HOST3]
-enabled=False
-esxi_host=192.168.11.11
+[HOST2]
+enabled=True
+esxi_host=192.168.11.46
 esxi_webport=443
-esxi_username=123
-esxi_password=1234
-ipmi_enabled=False
-ipmi_host=
-ipmi_username=
-ipmi_password=
-ipmi_vm_poweron_delay=300
+esxi_username=root
+esxi_password=[My Password]
+ipmi_enabled=True
+ipmi_vm_poweron_delay=330
+ipmi_host=192.168.11.222
+ipmi_username=root
+ipmi_password=[My Password]
